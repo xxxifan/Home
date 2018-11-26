@@ -7,6 +7,7 @@ import io.ktor.features.ContentNegotiation
 import io.ktor.features.PartialContent
 import io.ktor.features.StatusPages
 import io.ktor.gson.gson
+import io.ktor.http.content.*
 import io.ktor.locations.Locations
 import io.ktor.response.respondText
 import io.ktor.routing.get
@@ -19,7 +20,8 @@ import java.io.File
 
 object Server {
 
-  @JvmStatic fun main(args: Array<String>) {
+  @JvmStatic
+  fun main(args: Array<String>) {
     if (File("server.conf").exists()) {
       val customConfig = "-config=server.conf"
       embeddedServer(Netty, commandLineEnvironment(arrayOf(*args, customConfig))).start()
@@ -68,10 +70,16 @@ fun Application.module() {
     }
   }
   routing {
-//    resources("web")
 
-    get("/") {
-      call.respondText { "com.xxxifan.home.Server is running: ${(System.currentTimeMillis() - startTime) / 1000}s" }
+//    get("/") {
+//      call.respondText { "com.xxxifan.home.Server is running: ${(System.currentTimeMillis() - startTime) / 1000}s" }
+//    }
+    static {
+      resources("web")
+      staticBasePackage = "web"
+      defaultResource("index.html")
+
+      files("semantic")
     }
   }
 
